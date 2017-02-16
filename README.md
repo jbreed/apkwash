@@ -3,6 +3,8 @@ Android APK Antivirus evasion for msfvenom generated payloads.
 <br><br>
 <b> -- Please do not upload "washed" files to VirusTotal.com -- </b><br>
 <br>
+<b>Dependencies:</b><br>
+apt-get install lib32stdc++6 lib32ncurses5 lib32z1<br>
 <b>Setup:</b><br>
 chmod +x apkwash<br>
 mv apkwash /usr/local/bin/.<br>
