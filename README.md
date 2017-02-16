@@ -3,12 +3,15 @@ Android APK Antivirus evasion for msfvenom generated payloads.
 <br><br>
 <b> -- Please do not upload "washed" files to VirusTotal.com -- </b><br>
 <br>
-<b>Dependencies:</b><br>
-apt-get install lib32stdc++6 lib32ncurses5 lib32z1<br>
 <br>
 <b>Setup:</b><br>
 chmod +x apkwash<br>
 mv apkwash /usr/local/bin/.<br>
+<br>
+<b>On first run:</b><br>
+-Downloads and places apktool.jar in the user's /usr/local/bin directory<br>
+-Generates debug keystore for signing. Places it in ~/.android/<br>
+<b>NOTE:</b> If wanting to customize each signature, then remove the keystore before running the script.<br>
 <br>
 <b>Usage:</b><br>
 apktool \<payload>.apk<br>
