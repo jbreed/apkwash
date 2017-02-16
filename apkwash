@@ -31,7 +31,7 @@ VAR1=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
 VAR2=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
 VAR3=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Payload.smali renaming
 JAR=`which apktool.jar`
-apkName=AndroidService
+apkName=$(echo $APK | cut -f 1 -d '.')
 
 #APKTool to pull apart the package
 java -jar $JAR d -f -o /tmp/payload $fullPath
