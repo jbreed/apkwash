@@ -85,4 +85,6 @@ echo
 echo "Cleaning up"
 #rm -rf /tmp/payload
 echo "Finished"
-echo "Enjoy! Please do not upload the washed files to VirusTotal.com... use nodistribute.com instead"
+echo
+echo "Enjoy! Please do not upload the washed files to VirusTotal.com."
+echo "Use nodistribute.com instead"
