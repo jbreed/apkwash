@@ -83,7 +83,7 @@ echo "Signed the .apk file with ~/.android/debug.keystore"
 echo "Simply remove the debug.keystore file and re-run the program to be prompted to create a new debug key"
 echo
 echo "Cleaning up"
-#rm -rf /tmp/payload
+rm -rf /tmp/payload
 echo "Finished"
 echo
 echo "Enjoy! Please do not upload the washed files to VirusTotal.com."
