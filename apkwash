@@ -4,9 +4,6 @@
 # Purpose: Change msfvenom payload to bypass AV detection for a metasploit payload
 # Date: 0% detection as of 16Feb17
 
-# Need to add: *.apk filename check for passed in param
-# Need to add: Modification of installed app name
-
 if [ $# -eq 0 ] || [ ${1: -4} != ".apk" ]; then
     echo
     echo "-------------INVALID ARGUMENT------------"
