@@ -75,8 +75,9 @@ if [ ! -f ~/.android/debug.keystore ]; then
     fi
     keytool -genkey -v -keystore ~/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000
 fi
-echo;
-echo "Attempting to sign the package with your andrid debug key"
+echo
+echo -e "\033[34m Attempting to sign the package with your android debug key \x1B[0m"
+echo
 jarsigner -keystore ~/.android/debug.keystore -storepass android -keypass android -digestalg SHA1 -sigalg MD5withRSA washed_$APK androiddebugkey
 echo
 echo -e "\033[34m Signed the .apk file with ~/.android/debug.keystore \x1B[0m"
