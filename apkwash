@@ -77,7 +77,7 @@ if [ ! -f ~/.android/debug.keystore ]; then
 fi
 echo;
 echo "Attempting to sign the package with your andrid debug key"
-jarsigner -verbose -keystore ~/.android/debug.keystore -storepass android -keypass android -digestalg SHA1 -sigalg MD5withRSA washed_$APK androiddebugkey
+jarsigner -keystore ~/.android/debug.keystore -storepass android -keypass android -digestalg SHA1 -sigalg MD5withRSA washed_$APK androiddebugkey
 echo
 echo "Signed the .apk file with ~/.android/debug.keystore"
 echo "Simply remove the debug.keystore file and re-run the program to be prompted to create a new debug key"
