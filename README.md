@@ -4,7 +4,11 @@ Android APK Antivirus evasion for msfvenom generated payloads.
 <b> -- Please do not upload "washed" files to VirusTotal.com -- </b><br>
 <br>
 <br>
+<b> Tested on Kali linux rolling. </b><br>
+<br>
+<br>
 <b>Setup:</b><br>
+apt-get update && apt-get upgrade
 chmod +x apkwash<br>
 mv apkwash /usr/local/bin/.<br>
 <br>
@@ -31,5 +35,11 @@ Verified for Kaspersky mobile<br>
 <b>Modifiations</b><br>
 Feel free to open the script and make improvements. This script basically utilizes APKTool to open the package, uses sed to replace strings that flag AV, recompiles, then signs.<br>
 <br>
+<br>
+<b>Files</b><br>
+/tmp/payload    (Main files to review: AndroidManifest.xml and the smali files)
+<br>
+<br>
 <b>Debugging</b><br>
-Comment out the removal of the /tmp/payload directory to see the file structure that was compiled.<br>
+Comment out the removal of the /tmp/payload directory to see the file structure that was compiled.<br><br><br>
+<b>If you are seeing other "Payload".smali files in /tmp/payload/smali/com/var1/var2/ then be sure you have an updated system. I have found an older msfvenom version output a different payload that will be flagged by AVG (1/35 on nodistribute). Just making sure you are completely updated should resolve this.</b>
