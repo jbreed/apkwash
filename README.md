@@ -8,7 +8,7 @@ Android APK Antivirus evasion for msfvenom generated payloads.
 <br>
 <br>
 <b>Setup:</b><br>
-apt-get update && apt-get upgrade
+apt-get update && apt-get upgrade<br>
 chmod +x apkwash<br>
 mv apkwash /usr/local/bin/.<br>
 <br>
