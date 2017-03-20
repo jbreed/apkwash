@@ -37,6 +37,8 @@ Verified for AVG mobile<br>
 Verified for Kaspersky mobile<br>
 Verified for Lookout<br>
 FLAGGED BY AVAST! -- signature bypass coming soon. Haven't spent any time on this<br>
+APK:CloudRep[Susp] is the report for the suspicious app on Avast. <br>
+Per Avast: "the APK:CloudRep [Susp] is a warning-like message for applications that are very new/rare/previously unseen in our userbase."<br>
 <br>
 <b>Modifiations:</b><br>
 Feel free to open the script and make improvements. This script basically utilizes APKTool to open the package, uses sed to replace strings that flag AV, recompiles, then signs.<br>
