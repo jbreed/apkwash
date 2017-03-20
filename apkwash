@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Author: Justin Breed
-# Purpose: Change msfvenom payload to bypass AV detection for a metasploit payload
+# Purpose: Script the generation and AV bypass for MSFVenom generated Android payloads.
 # Tested Date: 20Mar17
 # NoDistribute: 0% Detection
 # Flagged by: Avast (PUP - May need to adjust permissions. Will review on next update)
