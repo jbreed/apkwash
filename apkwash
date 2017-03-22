@@ -37,14 +37,7 @@ redirect() {
 ### Setting up the input arguments and help information ###
 while [ -n "$1" ]; do
 	OPT="$1"
-	if [ x"$OPT" = x"--" ]; then
-		shift
-		for OPT ; do
-			REMAINS="$REMAINS \"$OPT\""
-		done
-		break
-	fi
-	while [ x"$OPT" != x"-" ] ; do
+	while [ "$OPT" != "-" ] ; do
 		case "$OPT" in
 			-h* | --help )
 				echo -e "
