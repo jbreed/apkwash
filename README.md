@@ -5,7 +5,7 @@ Android APK Antivirus evasion for msfvenom generated payloads.
 <b> Tested on Kali linux rolling. </b><br>
 <br>
 <b>Setup:</b><br>
-apt-get update && apt-get upgrade<br>
+apt-get update && apt-get dist-upgrade<br>
 chmod +x apkwash<br>
 mv apkwash /usr/local/bin/.<br>
 <br>
