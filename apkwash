@@ -143,6 +143,8 @@ android/shell/reverse_tcp               Spawn a piped command shell (sh). Connec
 			-o* | --output )
 				willRun=1
 				outFile="$2"
+				fullPath=$outFile
+				APK=$(basename $fullPath)
 				shift
 				;;
 			-g* | --generate )
@@ -245,8 +247,8 @@ fi
 ### Checking dependencies ###
 type apktool.jar >/dev/null 2>&1 || { 
     echo -e "\033[33m [-] \x1B[0m ApkTool depenency needed... downloading and moving to /usr/local/bin"
-    redirect wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.2.2.jar
-    mv apktool_2.2.2.jar apktool.jar
+    redirect wget https://bitbucket.org/iBotPeaches/apktool/downloads/apktool_2.2.4.jar
+    mv apktool_2.2.4.jar apktool.jar
     chmod +x apktool.jar
     mv apktool.jar /usr/local/bin/.
 }
